@@ -1,0 +1,30 @@
+<h1><%= @post.title%>: by, <% user = User.find(@post.user_id)%> <%= user.username%> </h1>
+
+<p><%= @post.body %></p>
+
+<% if @current_user.id == @post.user_id %>
+  <%= link_to "Edit", edit_post_path(@post) %>
+<%= link_to "Destroy", post_path(@post), data: {
+                    turbo_method: :delete,
+                    turbo_confirm: "Are you sure?"
+                  } %>
+</ul>
+<%end%>
+
+<div style="text-align: left;">
+  <div style="display: inline-block; margin-right: 10px;"><h2>Comments </h2> </div>
+  <div style="display: inline-block; margin-right: 10px;"> <%= @post.comments.count%></div>
+</div>
+<% if @post.comments.all.count != 0%>
+
+  <% @post.comments.find_each do |comm| %>
+    <%= render "comments/comment", comm: comm%>
+  <% end %> 
+<% else %>
+  <p> No comments right now. Add your own to be the first! </p>
+<%end%>
+
+<h2>Add a comment:</h2>
+<%= render "comments/form", post: @post, comment: @unsaved_comment %>
+
+<p><%= link_to "Go Back", root_path %> </p>
